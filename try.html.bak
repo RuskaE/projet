@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Annotations</title>
+  </head>
+  <body>
+    <h1>Créer une nouvelle annotation</h1>
+    <form id="create-form">
+      <label for="resource-url">URL de la ressource :</label>
+      <input type="text" id="resource-url" name="resourceUrl" required /><br />
+      <label for="note">Note :</label>
+      <input type="number" id="note" name="note" min="0" max="10" required /><br />
+      <label for="comment">Commentaire :</label>
+      <input type="text" id="comment" name="comment" /><br />
+      <button type="submit">Créer</button>
+    </form>
+
+    <hr />
+
+    <h1>Récupérer une annotation</h1>
+    <form id="get-one-form">
+      <label for="annotation-id">ID de l'annotation :</label>
+      <input type="text" id="annotation-id" name="annotationId" required /><br />
+      <button type="submit">Récupérer</button>
+    </form>
+    <div id="get-one-result"></div>
+
+    <hr />
+
+    <h1>Récupérer les annotations pour une ressource</h1>
+    <form id="get-for-resource-form">
+      <label for="resource-url">URL de la ressource :</label>
+      <input type="text" id="resource-url" name="resourceUrl" required /><br />
+      <button type="submit">Récupérer</button>
+    </form>
+    <div id="get-for-resource-result"></div>
+
+    <hr />
+
+    <h1>Récupérer toutes les annotations du serveur</h1>
+    <button id="get-all-button">Récupérer</button>
+    <div id="get-all-result"></div>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="try.js"></script>
+  </body>
+</html>

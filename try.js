@@ -1,0 +1,80 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
+
+/*
+mongoose.connect('mongodb://localhost:3000/nom_de_votre_base_de_donnees', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log('Connexion à MongoDB réussie !');
+}).catch((error) => {
+  console.log('Connexion à MongoDB échouée !');
+  console.error(error);
+});
+*/
+
+const Schema = mongoose.Schema;
+
+const AnnotationSchema = new Schema({
+  resource: String,
+  comment: String,
+  rating: Number,
+  parent: {
+    type: Schema.Types.ObjectId,
+    ref: 'Annotation'
+  }
+});
+
+const Annotation = mongoose.model('Annotation', AnnotationSchema);
+
+module.exports = Annotation;
+//const Annotation = require('./models/annotation');
+const cors = require('cors');
+
+const app = express();
+app.use(express.static('html'));
+const port = process.env.PORT || 3000;
+
+app.use(bodyParser.json());
+app.use(cors());
+
+mongoose.connect('mongodb://localhost:3000/annotations', { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch(() => console.log('Connexion à MongoDB échouée !'));
+
+// Route pour la création d'une nouvelle annotation
+app.post('/annotations', (req, res) => {
+  const annotation = new Annotation(req.body);
+
+  annotation.save()
+    .then(() => res.status(201).json(annotation))
+    .catch((error) => res.status(400).json({ error }));
+});
+
+// Route pour la récupération d'une annotation spécifique
+app.get('/annotations/:id', (req, res) => {
+  Annotation.findById(req.params.id)
+    .then((annotation) => res.status(200).json(annotation))
+    .catch((error) => res.status(404).json({ error }));
+});
+
+// Route pour la récupération de toutes les annotations pour une ressource donnée
+app.get('/annotations', (req, res) => {
+  const resourceId = req.query.resourceId;
+  Annotation.find({ resourceId })
+    .then((annotations) => res.status(200).json(annotations))
+    .catch((error) => res.status(400).json({ error }));
+});
+
+// Route pour la récupération de toutes les annotations du serveur
+app.get('/annotations/all', (req, res) => {
+  Annotation.find()
+    .then((annotations) => res.status(200).json(annotations))
+    .catch((error) => res.status(400).json({ error }));
+});
+
+app.listen(port, () => {
+  console.log(`Serveur démarré sur le port ${port}`);
+});
